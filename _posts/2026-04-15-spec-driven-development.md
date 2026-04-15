@@ -116,13 +116,29 @@ AlphaProof did exactly this for the International Math Olympiad. Generate thousa
 
 Put it in a simulator. Run it in staging. This isn't verifying the code — the proof did that. This is validating the **spec** against reality. When you find discrepancies, update the spec, regenerate, re-prove. Cheap, because the AI does the heavy lifting.
 
-## Verify Features, Not Entire Systems
+## Feature-First Development
 
-A practical concern: real systems are huge. You can't formally verify everything — state explosion makes that intractable.
+This is where spec-driven development changes how you plan work, not just how you write code.
 
-You don't need to. **Verify features independently.** Each feature gets its own spec, its own properties, its own proof. The bank transfer module is verified against P1-P8. The authentication module is verified against its own properties. The payment gateway against its own.
+Model checking explores every reachable state of a system. Two variables with 100 possible values each means 10,000 states. Add a third and it's 1,000,000. A fourth: 100,000,000. That's state explosion — the reason you can't model check an entire system at once.
 
-This is the architecture that makes spec-driven development tractable at scale. You slice vertically by feature, not horizontally by layer. Each slice is small enough to specify, verify, and reason about. The system-level integration is validated through testing and model checking, but the critical logic within each slice is proved.
+But a single well-scoped feature? A transfer between two accounts with a balance cap of 10,000? That's a tiny state space. A model checker chews through it in seconds.
+
+**The principle: the smaller you scope the feature, the simpler the verification becomes. Exponentially simpler.**
+
+This aligns perfectly with how good teams already work — small cards, clear acceptance criteria, vertical slices. The difference is that acceptance criteria become formal properties, and "done" means "verified," not "tests pass."
+
+Consider the difference:
+
+A ticket that says *"build the payment system"* is impossible to model check. The state space is enormous. The properties interact in unpredictable ways. You'd be waiting until heat death of the universe for TLC to finish.
+
+A ticket that says *"implement transfer between two accounts with a 10,000 limit where total funds are conserved"* — that's P1 through P8. Model checked in seconds. Verified in Dafny. Shipped with a proof.
+
+**Each feature gets its own spec, its own properties, its own proof.** The bank transfer module is verified against P1-P8. The authentication module is verified against its own properties. The payment gateway against its own. You slice vertically by feature, not horizontally by layer.
+
+This means your backlog drives your verification strategy. Smaller tickets aren't just good project management — they're what makes formal verification tractable. A team that already writes small, well-defined cards is already 80% of the way to spec-driven development. The missing step is writing the acceptance criteria as formal properties instead of prose.
+
+The system-level integration — how verified features compose together — is validated through testing, monitoring, and model checking at the design level. But the critical logic within each feature slice is *proved*. And for most systems, that's where the bugs live.
 
 ## The Security Argument
 
