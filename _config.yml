@@ -1,3 +1,5 @@
 title: Addzyyy
 description: Thoughts on software engineering, formal methods, and AI
 theme: minima
+minima:
+  skin: auto
