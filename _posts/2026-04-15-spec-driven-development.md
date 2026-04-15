@@ -4,125 +4,190 @@ title: "Spec-Driven Development: How AI and Formal Methods Will Change Software 
 date: 2026-04-15
 ---
 
-*The code you write is about to become irrelevant. The spec is all that matters.*
+*The spec is the source code. The code is a build artifact.*
 
 ---
 
-For decades, formal methods have been the gold standard of software correctness. If you want mathematical proof that your code does what it's supposed to do, formal verification is the answer. Airbus has used it since the A320. NASA uses it for mission-critical systems. Cryptographers use it to prove their protocols are sound.
+## The Bottleneck Nobody's Talking About
 
-And almost nobody else uses it. Because it's too expensive.
+AI writes code faster than humans can review it. That's the new reality. Copilot, Claude, GPT — they generate thousands of lines in seconds. And somewhere a developer is squinting at a diff trying to decide if it's correct.
 
-That's about to change.
+That doesn't scale. The bottleneck in software is no longer writing code. It's *verifying* code. And the gap is widening every day.
 
-## The Cost Problem
+So what if you didn't have to review the code at all? What if a machine could *prove* it's correct?
 
-Formal verification has always had a strong value proposition technically. The reason it stayed niche is cost, not capability. Estimates typically put formal verification at 3-5x the development cost of conventional approaches. That's why only domains where failure is catastrophic — aviation, nuclear, cryptography — could justify it. Everyone else writes tests and ships.
+That's not hypothetical. The technology exists. It's called formal verification. And AI is about to make it cheap enough for everyone.
 
-The cost comes from two places: writing formal specifications and constructing proofs. Both require specialised expertise. Both are painstaking manual work. Both are exactly the kind of structured, pattern-heavy tasks that large language models are getting good at.
+## Formal Methods: Powerful but Expensive — Until Now
 
-## AI Changes the Economics
+Formal verification gives you mathematical proof that code does what it's supposed to do. Not "we tested a bunch of cases and they passed." Proof. For all inputs. For all states. Always.
 
-Here's the key insight: AI makes formal methods cheaper by an order of magnitude.
+Airbus has used it since the A320. NASA uses it for mission-critical systems. Amazon used TLA+ to find critical bugs in S3 and DynamoDB that no amount of testing would have caught. The technique works.
 
-LLMs are already decent at translating natural-language intent into formal specifications — TLA+, Alloy, Dafny contracts, Lean theorems. They're getting better fast. And critically, the verification side doesn't need AI at all. Proof checkers like Coq, Lean, Isabelle, and Frama-C have small trusted kernels that are themselves formally verified or heavily audited. The AI sits entirely outside the trusted computing base.
+And almost nobody else uses it. Because writing formal specs and proofs has always cost 3-5x more than just writing the code. Only industries where failure kills people or loses billions could justify it. Everyone else writes tests and ships.
 
-This creates a powerful separation: **AI generates, math verifies.** The trust doesn't depend on the AI being correct. It depends on the verifier being correct — and the verifier is a small, well-understood piece of mathematics that has been scrutinised for decades.
+AI changes this equation overnight. LLMs are already decent at translating natural language into formal specifications — TLA+, Alloy, Dafny, Lean. And here's what matters: **the verification side doesn't need AI at all.** Proof checkers like Coq, Lean, and Isabelle have small trusted kernels that have been scrutinised for decades. The AI sits entirely outside the trusted computing base.
+
+**AI generates. Math verifies.** The trust doesn't depend on the AI being correct. It depends on the verifier being correct — and the verifier is a small, well-understood piece of mathematics.
 
 Generating correct code is hard. Checking a proof is easy. That asymmetry is the whole game.
 
-## From Writing Code to Writing Specs
+## The Spec Is the Source Code
 
-This shifts what developers actually do. Instead of writing code and hoping tests catch the bugs, you describe what the system should do. AI drafts a formal specification. You review it. AI generates code and a proof that the code satisfies the spec. A verified tool chain checks the proof.
+This changes what developers actually do. Instead of writing code and hoping tests catch the bugs, you write a spec — a set of properties your system must satisfy. AI generates the code and a proof. A verified tool chain checks the proof. If it passes, the code is correct. Period.
 
-The human moves up the abstraction ladder. Instead of being a coder who occasionally thinks about requirements, you become a **spec reviewer** — which is where human judgment adds the most value. Humans are better at "is this what I actually want?" than "did I handle the edge case on line 4,217?"
+The human moves up the abstraction ladder. Instead of coding, you become a **spec reviewer**. Humans are better at "is this what I actually want?" than "did I handle the edge case on line 4,217?"
 
-I call this **spec-driven development**. The spec becomes the versioned artifact. The code becomes a derived artifact — generated, proved correct, disposable. You don't edit it, you don't review it, you regenerate it. Just like nobody edits a Docker image or a compiled binary. You change the Dockerfile or the source and rebuild.
+I call this **spec-driven development.**
+
+The spec is the versioned artifact. The code is derived — generated, proved correct, disposable. You don't edit it. You don't review it. You regenerate it. Just like nobody edits a Docker image. You change the Dockerfile and rebuild.
+
+## What a Spec Actually Looks Like
+
+This isn't abstract. Here's a real spec for a bank transfer system:
+
+```
+P1 — Conservation of money:
+  accountA + accountB = constant (before and after every transfer)
+
+P2 — Non-negativity:
+  All balances >= 0, always
+
+P3 — Sufficient funds:
+  Transfer succeeds only if source balance >= transfer amount
+
+P4 — Correct debit:
+  On success, source decreases by exactly the transfer amount
+
+P5 — Correct credit:
+  On success, destination increases by exactly the transfer amount
+
+P6 — No side effects on failure:
+  If the transfer fails, nothing changes
+
+P7 — Valid amount:
+  Transfer amount must be positive
+
+P8 — Transfer limit:
+  No single transfer exceeds 10,000
+```
+
+That's it. That's what you review. It's small. It's readable. A banker could review it — no programming knowledge required. And from this, AI generates a verified implementation where every property is mathematically guaranteed.
+
+Want to add a feature? Add P9. Regenerate. Re-verify. You don't touch code. You don't figure out where to add an if statement. You state what you want and the machines handle the rest.
 
 ## The Workflow
 
-Here's what spec-driven development looks like in practice:
-
 **1. Human describes intent in natural language.**
 
-"I need a controller that keeps the aircraft within its flight envelope. It should prevent the pilot from exceeding angle of attack limits, respect structural load limits, and degrade gracefully if a sensor fails."
+"I need a bank transfer function. It should only succeed if the source has enough funds. Total money should never change. No balance goes negative. Cap transfers at 10,000."
 
 **2. AI drafts a formal spec.**
 
-The AI translates that into properties:
-
-- Angle of attack never exceeds 15 degrees in clean configuration
-- Load factor stays between -1g and +2.5g
-- If two of three sensors disagree, use the median
-- If all sensors fail, revert to alternate law, then direct law
+The AI translates that into properties like P1-P8 above. In Dafny, these become `requires` and `ensures` clauses. In TLA+, they become invariants.
 
 **3. Human reviews the spec.**
 
-The domain expert — a flight dynamics engineer, not a programmer — reads the properties and catches things: "15 degrees is the clean wing limit. With flaps extended it's 20." "You forgot about icing conditions." "Direct law isn't the right degradation path."
+This is where domain expertise matters. A finance person reads the properties and catches things: "You forgot about transfer fees." "What about currency conversion?" "The limit should be per-day, not per-transfer."
 
-This is where human expertise is irreplaceable, but the task is manageable — reviewing a page of properties, not thousands of lines of code.
+Reviewing a page of properties, not thousands of lines of code.
 
-**4. Simulate and model check.**
+**4. Model check the design.**
 
-Run the spec through a model checker. It explores thousands of scenarios and surfaces counterexamples:
+Before writing any code, run the spec through a model checker like TLC. It explores every reachable state and surfaces surprises:
 
-"Scenario: Sensor 1 fails, then sensor 2 reads erroneously high due to icing. The median vote selects the wrong value. Aircraft enters stall."
+*"Scenario: Account A has balance 100. Transfer of 100 succeeds. Account A is now 0. A second transfer of 1 is attempted. It fails. But the failure handling path doesn't check..."*
 
-The human says "we need a plausibility check — if a reading changes by more than 5 degrees in one second, flag it as failed." The spec tightens. The checker runs again. Repeat.
+You're debugging your **thinking**, not your code. This is where Amazon found the most value with TLA+ — catching design-level bugs that testing would never find because you'd never think to write that test.
 
 **5. AI generates code + proof.**
 
-Once the spec is stable, AI generates an implementation along with proof obligations. A verified tool chain checks that the code satisfies every property. The output is code plus a machine-checked certificate.
+The AI can brute force this — generate attempt after attempt, thousands of them. The verifier sits there saying "no, no, no, yes." It doesn't matter how many bad attempts the AI produces. The verifier never lets a wrong one through.
+
+AlphaProof did exactly this for the International Math Olympiad. Generate thousands of proof candidates in Lean, let the kernel check them. It solved problems most human mathematicians couldn't.
 
 **6. Validate against the real world.**
 
-Put it in a simulator. Run hardware-in-the-loop tests. This isn't verifying the code — the proof did that. This is validating the spec against physical reality. When discrepancies are found, update the spec, regenerate, re-prove. Cheap, because the AI does the work.
+Put it in a simulator. Run it in staging. This isn't verifying the code — the proof did that. This is validating the **spec** against reality. When you find discrepancies, update the spec, regenerate, re-prove. Cheap, because the AI does the heavy lifting.
 
-## The Techniques That Make Specs Better
+## Verify Features, Not Entire Systems
+
+A practical concern: real systems are huge. You can't formally verify everything — state explosion makes that intractable.
+
+You don't need to. **Verify features independently.** Each feature gets its own spec, its own properties, its own proof. The bank transfer module is verified against P1-P8. The authentication module is verified against its own properties. The payment gateway against its own.
+
+This is the architecture that makes spec-driven development tractable at scale. You slice vertically by feature, not horizontally by layer. Each slice is small enough to specify, verify, and reason about. The system-level integration is validated through testing and model checking, but the critical logic within each slice is proved.
+
+## The Security Argument
+
+Most CVEs are implementation bugs. Buffer overflows. SQL injection. Type confusion. Out-of-bounds reads. Integer overflows. The OWASP top 10 is essentially a list of things that formally verified code eliminates by construction.
+
+This isn't a minor benefit. This is transformative.
+
+If your code is proved to satisfy its spec, and the spec says "user input is always sanitised before reaching the database" and "array access never exceeds bounds" and "arithmetic never overflows" — then those entire vulnerability classes don't exist. Not because you wrote careful code. Not because you ran a scanner. Because it's *mathematically impossible* for them to occur.
+
+Formal verification doesn't catch every security issue — side channels, hardware bugs, and social engineering are outside the model. But the implementation-level bugs that make up the vast majority of real-world exploits? Gone.
+
+## Proof-Carrying Code and the Supply Chain Problem
+
+Software supply chain attacks are the threat everyone is panicking about right now. You pull in a dependency — how do you know it's safe? You download a binary — how do you know it matches the source?
+
+Spec-driven development offers something new: **proof-carrying code.** The artifact you ship isn't just code. It's code + spec + proof + cryptographic signature. Anyone can independently verify:
+
+1. The spec says what it should (human review)
+2. The code satisfies the spec (machine-checked proof)
+3. The proof is valid (independent verification)
+4. The artifact hasn't been tampered with (cryptographic signature)
+
+The entire chain is verifiable. You don't trust the developer. You don't trust the build system. You don't trust the registry. You verify the proof. If it checks out, the code is correct — regardless of where it came from.
+
+This is what real supply chain security looks like. Not scanning for known CVEs. Not hoping your dependencies are honest. Mathematical proof of correctness with cryptographic provenance.
+
+## Making Specs Better
 
 The obvious concern: what if the spec is wrong? You get a perfectly verified implementation of the wrong thing. This is the irreducible hard problem — verification proves you built the thing right, never that you built the right thing.
 
 But there are well-established techniques for catching bad specs, and AI accelerates all of them:
 
-**Executable specs.** If your spec is in something like TLA+ or Alloy, you can simulate it before any code exists. The model checker explores every reachable state and surfaces surprising ones. You're debugging your thinking, not your code.
+**Executable specs.** In TLA+ or Alloy, you can simulate the spec before any code exists. The model checker explores every reachable state and surfaces surprising ones. You're debugging your thinking, not your code.
 
-**Property-based thinking.** Instead of specifying exact input-output behavior ("return 42 when X"), specify invariants and boundaries ("balance never goes negative", "altitude stays within envelope"). These are harder to get wrong because they're closer to how domain experts actually think. A banker doesn't think in function calls. They think "we never give out money we don't have."
+**Property-based thinking.** Instead of specifying exact behaviour ("return 42 when X"), specify invariants ("balance never goes negative", "altitude stays within envelope"). These are harder to get wrong because they match how domain experts actually think. A banker thinks "we never give out money we don't have" — that's a property, not a function signature.
 
-**Counterexample-driven refinement.** The model checker finds a scenario the spec allows that shouldn't happen. The human says "that's wrong." The spec tightens. Each round surfaces requirements you didn't know you had — not by imagining them, but by seeing concrete scenarios where the spec produces bad outcomes.
+**Counterexample-driven refinement.** The model checker finds a scenario the spec allows that shouldn't happen. You say "that's wrong." The spec tightens. Each round surfaces requirements you didn't know you had. With AI in the loop, this cycle takes minutes, not months.
 
-**Domain-specific spec languages.** A spec language tailored to flight control or financial settlement constrains what you can express, which prevents entire categories of specification errors. You lose the ability to say arbitrary things, but that's the point — most of those things would have been mistakes.
+**Domain-specific spec languages.** A spec language tailored to flight control or financial settlement constrains what you can express. You can't accidentally specify something physically impossible. The language itself prevents categories of errors.
 
-With AI in the loop, the feedback cycle of write-spec, simulate, review, refine goes from months to minutes. An engineer who goes through that refinement cycle 50 times in a week develops better intuition for what they're missing than one who ships two spec revisions a year.
+## What This Doesn't Solve
 
-## It's Not Just for Avionics
+Honesty time. Formal verification is not a silver bullet.
 
-The real impact isn't making aerospace verification slightly cheaper. It's bringing formal correctness to everything:
+**Spec bugs.** The Ariane 5 exploded because the software was correct with respect to its spec — but the spec was inherited from Ariane 4 and didn't account for the new rocket's trajectory. Perfectly verified, perfectly wrong.
 
-- **Medical devices** — currently under-verified relative to the risk
-- **Automotive** — autonomous driving stacks that are tested but not proved
-- **Financial systems** — where a subtle bug can move billions
-- **Smart contracts** — where bugs are literally irreversible
-- **CI/CD pipelines** — deceptively complex, constant source of security incidents
-- **Ordinary software** — even a web API could have its core logic verified
+**Side channels.** Timing attacks, power analysis, electromagnetic emanation — these are physical phenomena outside the logical model. Your code can be proved correct and still leak secrets through the hardware.
 
-Take something as mundane as a GitHub Action. "Run tests on PR, require approval before deploying to production." Simple, right? But the real requirements include: approval must be invalidated when new commits are pushed, secrets must never be exposed in steps that run untrusted code, the workflow shouldn't run on forks with write permissions, deploys must be atomic. These are the kind of edge cases that model checkers find in seconds and humans miss routinely.
+**Hardware faults.** Cosmic rays flip bits. Memory degrades. Sensors lie. The proof says "if the hardware behaves as modelled" — and sometimes it doesn't.
 
-The point of cheap formal methods isn't just that you can use them on small things. It's that the small things are where most real-world bugs live.
+**Concurrency at scale.** Verifying a single module is tractable. Verifying the emergent behaviour of thousands of distributed services communicating over unreliable networks is still an open research problem.
+
+**The spec itself.** No tool can tell you whether your spec captures what the real world actually needs. That requires human judgment, domain expertise, and contact with reality. Always will.
+
+Knowing these limits makes the approach stronger, not weaker. You use formal verification for what it's good at — eliminating implementation bugs — and other techniques for everything else.
 
 ## What Changes
 
-**Version control changes.** You diff specs, review specs, merge specs. A PR becomes "I changed this property from X to Y" — not "I modified 47 files across 3 services." Every commit directly expresses a requirement change. The git history becomes a readable record of how your understanding of the problem evolved.
+**Version control changes.** You diff specs, review specs, merge specs. A PR becomes "I changed this property from X to Y" — not "I modified 47 files across 3 services." Every commit directly expresses a requirement change. The git history becomes a readable record of how your understanding evolved.
 
-**Code review changes.** Implementation-level debates — code style, naming, clever versus readable — become irrelevant. Nobody reviews generated code. Review is about intent: does this spec capture what we actually need?
+**Code review dies.** Style debates, naming arguments, clever-vs-readable — irrelevant. Nobody reviews generated code. Review is about intent: does this spec capture what we actually need?
 
-**Technical debt changes.** You don't accumulate it in code, because the code is regenerated. You accumulate it in specs — properties that were good enough at the time but no longer reflect reality. Spec debt replaces tech debt.
+**Tech debt becomes spec debt.** You don't accumulate cruft in code, because the code is regenerated. You accumulate it in specs — properties that were good enough at the time but no longer reflect reality.
 
-**Certification changes.** Instead of telling a regulator "we tested 10,000 scenarios and they all passed," you say "here is a mathematical proof that this property holds in all scenarios, and here is evidence that the properties match the real system." The Airbus verification process that takes years could potentially be compressed dramatically.
+**Certification changes.** Instead of telling a regulator "we tested 10,000 scenarios and they all passed," you hand them a mathematical proof. The Airbus verification process that takes years gets compressed dramatically.
 
-**The job changes.** Software engineering starts to look more like engineering engineering — you produce specifications, and the fabrication is automated and certified.
+**The job changes.** Software engineering starts to look more like engineering — you produce specifications, and the fabrication is automated and certified.
 
 ## The Progression
 
-Look at the history of what developers version control:
+What developers version control:
 
 - **1970s:** Machine code
 - **1980s:** Source code
@@ -131,20 +196,22 @@ Look at the history of what developers version control:
 - **2010s:** Source code + containers + pipelines
 - **Next:** Specs. Code drops out entirely.
 
-Each step moved the human further from the machine and closer to intent. Each layer we automated, we stopped worrying about. Nobody manually manages memory allocation anymore. Nobody hand-writes assembly. Nobody configures servers by hand. Each time, people said "you'll always need a human for that." Each time, they were wrong.
+Each step moved the human further from the machine and closer to intent. Each layer we automated, we stopped worrying about. Nobody writes assembly. Nobody configures servers by hand. Each time, people said "you'll always need a human for that." Each time, they were wrong.
 
-Code might just be the next layer that disappears from human concern.
+Code is next.
 
-## The Irreducible Human Part
+## Start Now
 
-None of this eliminates the need for human judgment. The chain is:
+You don't need to wait for the ecosystem to mature. The pieces exist today:
 
-**Real world → Human understanding → Spec → Code → Proof**
+1. **Pick a verifier.** Dafny is the easiest on-ramp. Lean 4 has the most AI momentum. TLA+ is best for distributed systems design.
+2. **Write an intent spec** for something small. A function. An API endpoint. A state machine.
+3. **Send it to an LLM** with the prompt: "Translate this spec into Dafny with requires/ensures clauses. Generate an implementation the verifier accepts."
+4. **Run the verifier.** If it fails, feed the error back to the LLM. Let it try again. Loop until it passes.
+5. **Model check the spec** in TLA+ to find scenarios you missed.
 
-AI and formal methods make the right side of that chain airtight. The left side — understanding what the world actually needs — remains a human problem. You still need domain experts who can look at a spec and say "that's not what the aircraft should do" or "that's not how settlement works."
-
-But that's a healthy division of labour. Humans handle intent. Machines handle correctness. And the spec is the contract between the two.
+That loop — spec, check, refine, generate, prove — is the future of software development. And you can start running it today.
 
 ---
 
-*Spec-driven development isn't a framework or a tool. It's the natural consequence of making formal verification cheap. When proving correctness costs less than writing tests, everything changes.*
+*Spec-driven development isn't a framework or a methodology. It's the inevitable consequence of making formal verification cheap. When proving correctness costs less than writing tests, everything changes. The spec is all that remains.*
