@@ -82,17 +82,23 @@ Want to add a feature? Add P9. Regenerate. Re-verify. You don't touch code. You 
 
 "I need a bank transfer function. It should only succeed if the source has enough funds. Total money should never change. No balance goes negative. Cap transfers at 10,000."
 
-**2. AI drafts a formal spec.**
+**2. AI drafts human-readable properties.**
 
-The AI translates that into properties like P1-P8 above. In Dafny, these become `requires` and `ensures` clauses. In TLA+, they become invariants.
+The AI translates your intent into plain English properties — P1 through P8 above. No code. No syntax. Just clear statements of what must be true.
 
-**3. Human reviews the spec.**
+**3. Human reviews the properties in plain English.**
 
 This is where domain expertise matters. A finance person reads the properties and catches things: "You forgot about transfer fees." "What about currency conversion?" "The limit should be per-day, not per-transfer."
 
-Reviewing a page of properties, not thousands of lines of code.
+You're reviewing a page of plain English statements, not code. No programming knowledge required.
 
-**4. Model check the design.**
+**4. AI translates properties into formal syntax.**
+
+Once the human signs off on the properties, the AI converts them into a formal language — Dafny `requires`/`ensures` clauses, TLA+ invariants, Lean theorems. The human never needs to read this. But as a sanity check, a second AI pass translates the formal spec *back* into plain English. If the round-trip doesn't match the original properties, the translation is wrong. The human reads English twice and checks it says the same thing both times.
+
+The formal syntax is an implementation detail between the AI and the verifier. You don't read LLVM bytecode when you write C. Same idea.
+
+**5. Model check the design.**
 
 Before writing any code, run the spec through a model checker like TLC. It explores every reachable state and surfaces surprises:
 
@@ -100,13 +106,13 @@ Before writing any code, run the spec through a model checker like TLC. It explo
 
 You're debugging your **thinking**, not your code. This is where Amazon found the most value with TLA+ — catching design-level bugs that testing would never find because you'd never think to write that test.
 
-**5. AI generates code + proof.**
+**6. AI generates code + proof.**
 
 The AI can brute force this — generate attempt after attempt, thousands of them. The verifier sits there saying "no, no, no, yes." It doesn't matter how many bad attempts the AI produces. The verifier never lets a wrong one through.
 
 AlphaProof did exactly this for the International Math Olympiad. Generate thousands of proof candidates in Lean, let the kernel check them. It solved problems most human mathematicians couldn't.
 
-**6. Validate against the real world.**
+**7. Validate against the real world.**
 
 Put it in a simulator. Run it in staging. This isn't verifying the code — the proof did that. This is validating the **spec** against reality. When you find discrepancies, update the spec, regenerate, re-prove. Cheap, because the AI does the heavy lifting.
 
