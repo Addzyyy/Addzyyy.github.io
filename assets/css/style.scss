@@ -5,75 +5,103 @@
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #1a1a2e;
-    color: #e0e0e0;
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+  }
+
+  .wrapper {
+    color: #e0e0e0 !important;
+  }
+
+  .page-content {
+    background-color: #1a1a2e !important;
   }
 
   .site-header {
-    background-color: #16213e;
-    border-top-color: #0f3460;
-    border-bottom-color: #0f3460;
+    background-color: #16213e !important;
+    border-top-color: #0f3460 !important;
+    border-bottom-color: #0f3460 !important;
   }
 
-  .site-title, .site-title:visited {
+  .site-title, .site-title:visited, .site-title:hover {
     color: #e0e0e0 !important;
   }
 
   .site-nav .page-link {
-    color: #e0e0e0;
+    color: #e0e0e0 !important;
   }
 
   .site-footer {
-    background-color: #16213e;
-    border-top-color: #0f3460;
-    color: #999;
+    background-color: #16213e !important;
+    border-top-color: #0f3460 !important;
+    color: #999 !important;
   }
 
-  a, a:visited {
-    color: #6ea8f7;
+  .footer-col-wrapper {
+    color: #999 !important;
   }
 
-  a:hover {
-    color: #a0c8ff;
+  a, a:visited, .post-link {
+    color: #6ea8f7 !important;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    color: #f0f0f0;
+  a:hover, .post-link:hover {
+    color: #a0c8ff !important;
   }
 
-  .post-title, .post-link {
-    color: #f0f0f0;
+  h1, h2, h3, h4, h5, h6,
+  .post-title,
+  .post-content h1,
+  .post-content h2,
+  .post-content h3,
+  .post-content h4 {
+    color: #f0f0f0 !important;
   }
 
   .post-meta {
-    color: #888;
+    color: #888 !important;
   }
 
-  code {
-    background-color: #2a2a3e;
-    border-color: #3a3a4e;
-    color: #e0e0e0;
+  .post-content p,
+  .post-content li,
+  .post-content {
+    color: #e0e0e0 !important;
+  }
+
+  code, code.highlighter-rouge {
+    background-color: #2a2a3e !important;
+    border-color: #3a3a4e !important;
+    color: #e0e0e0 !important;
   }
 
   pre, pre.highlight {
-    background-color: #2a2a3e;
-    border-color: #3a3a4e;
+    background-color: #2a2a3e !important;
+    border-color: #3a3a4e !important;
+    color: #e0e0e0 !important;
   }
 
   blockquote {
-    color: #aaa;
-    border-left-color: #0f3460;
+    color: #aaa !important;
+    border-left-color: #0f3460 !important;
   }
 
   hr {
-    border-color: #333;
+    border-color: #333 !important;
   }
 
   table th, table td {
-    border-color: #333;
+    border-color: #333 !important;
   }
 
   table tr:nth-child(even) {
-    background-color: #222;
+    background-color: #222 !important;
+  }
+
+  strong {
+    color: #f0f0f0 !important;
+  }
+
+  em {
+    color: #ccc !important;
   }
 }
