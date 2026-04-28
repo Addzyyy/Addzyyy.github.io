@@ -6,9 +6,23 @@
 // Base typography — applies in both light and dark
 .post-content,
 .page-content {
-  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   font-size: 18px;
   line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Force the blockquote (the keypoint box) to use the same sans-serif stack so
+// it stays readable on the dark warm-tinted background.
+.post-content blockquote,
+.post-content blockquote p,
+.post-content blockquote li,
+.post-content blockquote strong,
+.post-content blockquote em {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif !important;
 }
 
 .post-content h2 {
