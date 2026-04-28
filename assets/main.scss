@@ -181,13 +181,30 @@
   // Blockquote styled as the keypoint box from BLOG_POST.html
   blockquote,
   .post-content blockquote {
-    background-color: #2a2018 !important;
+    background-color: #22232a !important;
     border-left-color: #e8763f !important;
-    color: #e8e6e3 !important;
+    color: #f0eeea !important;
+    padding: 1.5rem 1.75rem !important;
   }
 
-  blockquote strong {
+  .post-content blockquote p,
+  .post-content blockquote li {
     color: #f0eeea !important;
+    line-height: 1.7 !important;
+  }
+
+  .post-content blockquote strong {
+    color: #ffffff !important;
+  }
+
+  .post-content blockquote em {
+    color: #d8d4ca !important;
+  }
+
+  .post-content blockquote code,
+  .post-content blockquote code.highlighter-rouge {
+    background-color: #2e2f37 !important;
+    border-color: #3a3b44 !important;
   }
 
   hr {
