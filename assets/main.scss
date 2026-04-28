@@ -89,12 +89,26 @@
     border-color: #333 !important;
   }
 
+  table {
+    color: #e0e0e0 !important;
+    border-color: #3a3a4e !important;
+  }
+
   table th, table td {
-    border-color: #333 !important;
+    border-color: #3a3a4e !important;
+  }
+
+  table th {
+    background-color: #16213e !important;
+    color: #f0f0f0 !important;
+  }
+
+  table tr {
+    background-color: #1a1a2e !important;
   }
 
   table tr:nth-child(even) {
-    background-color: #222 !important;
+    background-color: #22223a !important;
   }
 
   strong {
