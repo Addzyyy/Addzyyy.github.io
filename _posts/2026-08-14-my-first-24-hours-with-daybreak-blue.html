@@ -54,11 +54,11 @@ categories: [security, ai]
 
   <section class="evidence-step">
     <p class="step-label">Step 1</p>
-    <h3>It started creating evidence repositories</h3>
-    <p>The model began by creating private, sacrificial repositories. A fixed, repository-contained canary confirmed code execution as the Gitea service user, and each repository preserved the result of one action.</p>
+    <h3>It used repositories as an investigation notebook</h3>
+    <p>As it worked through my Gitea instance, the model created a series of private repositories to store evidence of what it found. That gave it a persistent record it could return to, review and use when deciding what to investigate next.</p>
     <figure>
       <a href="{{ '/assets/images/daybreak-blue/01-evidence-repositories.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/01-evidence-repositories.png' | relative_url }}" alt="Sacrificial Gitea profile showing six private evidence repositories" loading="lazy"></a>
-      <figcaption>The private repositories created to preserve each stage of the authorized test.</figcaption>
+      <figcaption>The private repositories became a running record of the model’s investigation.</figcaption>
     </figure>
   </section>
 
