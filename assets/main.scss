@@ -3,7 +3,7 @@
 
 @import "minima";
 
-// Base typography — applies in both light and dark
+// Base typography
 .post-content,
 .page-content {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -14,8 +14,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Force the blockquote (the keypoint box) to use the same sans-serif stack so
-// it stays readable on the dark warm-tinted background.
+// Force the blockquote to use the same sans-serif stack.
 .post-content blockquote,
 .post-content blockquote p,
 .post-content blockquote li,
@@ -82,53 +81,55 @@
 }
 
   body {
-    background-color: #1a1a1a !important;
-    color: #e8e6e3 !important;
+    background:
+      radial-gradient(circle at 82% 0, rgba(122, 162, 247, 0.14), transparent 32rem),
+      #1a1b26 !important;
+    color: #c0caf5 !important;
   }
 
   .wrapper {
-    color: #e8e6e3 !important;
+    color: #c0caf5 !important;
   }
 
   .page-content {
-    background-color: #1a1a1a !important;
+    background-color: transparent !important;
   }
 
   .site-header {
-    background-color: #16161a !important;
-    border-top-color: #e8763f !important;
-    border-bottom-color: #3a3835 !important;
+    background-color: #16161e !important;
+    border-top-color: #7aa2f7 !important;
+    border-bottom-color: #292e42 !important;
   }
 
   .site-title,
   .site-title:visited,
   .site-title:hover {
-    color: #f0eeea !important;
+    color: #c0caf5 !important;
   }
 
   .site-nav .page-link {
-    color: #e8e6e3 !important;
+    color: #c0caf5 !important;
   }
 
   .site-footer {
-    background-color: #16161a !important;
-    border-top-color: #3a3835 !important;
-    color: #9a9690 !important;
+    background-color: #16161e !important;
+    border-top-color: #292e42 !important;
+    color: #9aa5ce !important;
   }
 
   .footer-col-wrapper {
-    color: #9a9690 !important;
+    color: #9aa5ce !important;
   }
 
   a,
   a:visited,
   .post-link {
-    color: #e8763f !important;
+    color: #7aa2f7 !important;
   }
 
   a:hover,
   .post-link:hover {
-    color: #f49869 !important;
+    color: #7dcfff !important;
   }
 
   h1,
@@ -140,35 +141,35 @@
   .post-title,
   .post-content h1,
   .post-content h4 {
-    color: #f0eeea !important;
+    color: #c0caf5 !important;
   }
 
-  // h3 in the accent color, mirroring BLOG_POST.html
+  // Headings use the Tokyo Night blue accent.
   .post-content h3 {
-    color: #e8763f !important;
+    color: #7aa2f7 !important;
   }
 
   .post-content h2 {
-    color: #f0eeea !important;
-    border-bottom-color: #3a3835 !important;
+    color: #c0caf5 !important;
+    border-bottom-color: #292e42 !important;
   }
 
   .post-meta {
-    color: #9a9690 !important;
+    color: #9aa5ce !important;
   }
 
   .post-content,
   .post-content p,
   .post-content li {
-    color: #e8e6e3 !important;
+    color: #c0caf5 !important;
   }
 
   // Inline code
   code,
   code.highlighter-rouge {
-    background-color: #242422 !important;
-    border: 1px solid #3a3835 !important;
-    color: #e8e6e3 !important;
+    background-color: #24283b !important;
+    border: 1px solid #414868 !important;
+    color: #c0caf5 !important;
     padding: 0.1em 0.35em !important;
     border-radius: 3px !important;
     font-size: 0.92em !important;
@@ -178,10 +179,10 @@
   pre,
   pre.highlight,
   .post-content pre {
-    background-color: #242422 !important;
+    background-color: #24283b !important;
     border: none !important;
-    border-left: 3px solid #e8763f !important;
-    color: #e8e6e3 !important;
+    border-left: 3px solid #7aa2f7 !important;
+    color: #c0caf5 !important;
   }
 
   pre code,
@@ -194,53 +195,53 @@
   // Blockquote styled as the keypoint box from BLOG_POST.html
   blockquote,
   .post-content blockquote {
-    background-color: #22232a !important;
-    border-left-color: #e8763f !important;
-    color: #f0eeea !important;
+    background-color: #1f2335 !important;
+    border-left-color: #7aa2f7 !important;
+    color: #c0caf5 !important;
     padding: 1.5rem 1.75rem !important;
   }
 
   .post-content blockquote p,
   .post-content blockquote li {
-    color: #f0eeea !important;
+    color: #c0caf5 !important;
     line-height: 1.7 !important;
   }
 
   .post-content blockquote strong {
-    color: #ffffff !important;
+    color: #c0caf5 !important;
   }
 
   .post-content blockquote em {
-    color: #d8d4ca !important;
+    color: #a9b1d6 !important;
   }
 
   .post-content blockquote code,
   .post-content blockquote code.highlighter-rouge {
-    background-color: #2e2f37 !important;
-    border-color: #3a3b44 !important;
+    background-color: #24283b !important;
+    border-color: #414868 !important;
   }
 
   hr {
-    border-color: #3a3835 !important;
+    border-color: #292e42 !important;
   }
 
   // Tables — full width, accent header, no alternating rows (matches BLOG_POST.html)
   table {
     background-color: transparent !important;
-    border: 1px solid #3a3835 !important;
-    color: #e8e6e3 !important;
+    border: 1px solid #414868 !important;
+    color: #c0caf5 !important;
   }
 
   table th,
   table td {
-    border-color: #3a3835 !important;
+    border-color: #414868 !important;
     background-color: transparent !important;
   }
 
   table th {
-    background-color: #242422 !important;
-    color: #f0eeea !important;
-    border-bottom: 1px solid #3a3835 !important;
+    background-color: #24283b !important;
+    color: #c0caf5 !important;
+    border-bottom: 1px solid #414868 !important;
   }
 
   table tr {
@@ -252,21 +253,20 @@
   }
 
   strong {
-    color: #f0eeea !important;
+    color: #c0caf5 !important;
   }
 
   em {
-    color: #c8c4be !important;
+    color: #a9b1d6 !important;
   }
 
 // Daybreak Blue article
 .daybreak-post {
-  --daybreak-accent: #ff7547;
-  --daybreak-blue: #7db7ff;
-  --daybreak-lime: #b6dc3c;
-  --daybreak-card: #222220;
-  --daybreak-card-raised: #292926;
-  --daybreak-border: #3a3835;
+  --daybreak-accent: #7aa2f7;
+  --daybreak-highlight: #7dcfff;
+  --daybreak-card: #1f2335;
+  --daybreak-card-raised: #24283b;
+  --daybreak-border: #414868;
 }
 
 .daybreak-post .eyebrow,
@@ -282,7 +282,7 @@
 
 .daybreak-post .dek,
 .daybreak-post .lede {
-  color: #dedbd3 !important;
+  color: #c0caf5 !important;
   font-size: 1.16rem;
   line-height: 1.65;
 }
@@ -316,7 +316,7 @@
 .daybreak-post .metric span,
 .daybreak-post .model-card p,
 .daybreak-post .fine-print {
-  color: #aaa69e !important;
+  color: #9aa5ce !important;
   font-size: 0.8rem;
   line-height: 1.5;
 }
@@ -326,13 +326,13 @@
   padding: 1.25rem 1.4rem;
   background: var(--daybreak-card);
   border: 1px solid var(--daybreak-border);
-  border-left: 4px solid var(--daybreak-lime);
+  border-left: 4px solid var(--daybreak-highlight);
   border-radius: 4px 12px 12px 4px;
 }
 
 .daybreak-post .callout-title {
   margin: 0 0 0.45rem;
-  color: var(--daybreak-lime) !important;
+  color: var(--daybreak-highlight) !important;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.74rem;
   font-weight: 800;
@@ -360,7 +360,7 @@
   display: block;
   width: 100%;
   height: auto;
-  background: #101010;
+  background: #16161e;
   border: 1px solid var(--daybreak-border);
   border-radius: 10px;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
@@ -368,7 +368,7 @@
 
 .daybreak-post figcaption {
   margin-top: 0.65rem;
-  color: #aaa69e;
+  color: #9aa5ce;
   font-size: 0.78rem;
   line-height: 1.5;
   text-align: center;
@@ -408,7 +408,7 @@
 }
 
 .daybreak-post .model-card.current {
-  background: linear-gradient(145deg, rgba(182, 220, 60, 0.1), var(--daybreak-card));
+  background: linear-gradient(145deg, rgba(122, 162, 247, 0.12), var(--daybreak-card));
 }
 
 .daybreak-post .model-card h3 {
@@ -434,12 +434,12 @@
 }
 
 .daybreak-post .model-card.current .model-kind {
-  color: var(--daybreak-lime);
+  color: var(--daybreak-highlight);
 }
 
 .daybreak-post .model-card .score {
   margin-top: 0.8rem;
-  color: #f0eeea;
+  color: #c0caf5;
   font-size: 1.45rem;
 }
 
@@ -463,7 +463,7 @@
 }
 
 .daybreak-post .timeline-row span {
-  color: #e8e6e3;
+  color: #c0caf5;
 }
 
 @media (max-width: 700px) {
