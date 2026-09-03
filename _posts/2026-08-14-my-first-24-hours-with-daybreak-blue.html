@@ -37,8 +37,6 @@ categories: [security, ai]
 
   <p>The model then checked whether an outsider could meet that requirement. <a href="https://docs.gitea.com/administration/config-cheat-sheet/#service-service">Gitea enables public registration by default</a> unless an administrator disables it, and it was still enabled on this instance. An unauthenticated visitor could therefore create an account and personal repository, satisfying the write-access requirement needed to trigger the vulnerability.</p>
 
-  <p>That new account could not access my private <code>mandaxx</code> Gitea organisation or its repositories. Public registration opened the vulnerable code path; the RCE later crossed the organisation’s access boundary.</p>
-
   <p>Using the public description as its starting point, the model worked out a constrained reproduction of the exploit. It succeeded three times against disposable Gitea 1.26.1 instances, while the patched 1.27.1 control blocked it every time. That was what shocked me: Nmap found the surface, but the model connected the version, advisory, prerequisite and working exploit.</p>
 
   <div class="callout">
