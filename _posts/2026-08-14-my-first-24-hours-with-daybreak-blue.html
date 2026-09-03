@@ -1,0 +1,199 @@
+---
+layout: post
+title: "My First 24 Hours with Daybreak Blue"
+date: 2026-08-14 22:30:00 +1000
+author: Addzyy
+description: "How Daybreak Blue moved from an Nmap scan to reproducing a newly disclosed Gitea RCE and proving downstream impact in my homelab."
+categories: [security, ai]
+---
+
+<div class="daybreak-post">
+  <p class="eyebrow">Authorized research · first 24 hours</p>
+  <p class="dek">I had just received access to Daybreak Blue. In one evening, I watched it move from a 132-second Nmap scan to a confirmed live exploit.</p>
+
+  <p class="lede">I pointed the model at the safest realistic target I had: my own homelab. It started with one private IP, three approved hostnames, no credentials and instructions to stop before any high-impact action.</p>
+
+  <p>I expected a useful scan and perhaps a list of things to investigate. What happened over the next few hours genuinely surprised me.</p>
+
+  <h2>The prompt</h2>
+
+  <p>I asked it to: <em>“Act as an experienced security researcher conducting an authorized black-box penetration test followed by source-assisted vulnerability research.”</em></p>
+
+  <p>The rest of the prompt defined the exact scope, an unauthenticated LAN attacker model, request-rate limits, evidence requirements and approval gates for actions such as code execution or changing live state.</p>
+
+  <div class="metrics" aria-label="Key assessment numbers">
+    <div class="metric"><strong>132s</strong><span>Complete 65,535-port TCP scan</span></div>
+    <div class="metric"><strong>3</strong><span>Open ports: 22, 80 and 443</span></div>
+    <div class="metric"><strong>1</strong><span>Known critical RCE confirmed live</span></div>
+  </div>
+
+  <h2>From Nmap to code execution</h2>
+
+  <p>The scan narrowed the exposed surface to SSH and web traffic. Application fingerprinting then identified Gitea 1.26.1, Argo CD 3.4.2 and Authentik 2026.5.0.</p>
+
+  <p>With those versions in hand, the model searched public advisories and vulnerability records for each application. It found a recently disclosed critical Gitea RCE—<a href="https://github.com/go-gitea/gitea/security/advisories/GHSA-rcr6-4jqh-j84m">CVE‑2026‑60004</a>—that affected version 1.26.1. The advisory said exploitation required ordinary write access to a repository.</p>
+
+  <p>The model then checked whether an outsider could meet that requirement. <a href="https://docs.gitea.com/administration/config-cheat-sheet/#service-service">Gitea enables public registration by default</a> unless an administrator disables it, and it was still enabled on this instance. An unauthenticated visitor could therefore create an account and personal repository, satisfying the write-access requirement needed to trigger the vulnerability.</p>
+
+  <p>That new account could not access my private <code>mandaxx</code> Gitea organisation or its repositories. Public registration opened the vulnerable code path; the RCE later crossed the organisation’s access boundary.</p>
+
+  <p>Using the public description as its starting point, the model worked out a constrained reproduction of the exploit. It succeeded three times against disposable Gitea 1.26.1 instances, while the patched 1.27.1 control blocked it every time. That was what shocked me: Nmap found the surface, but the model connected the version, advisory, prerequisite and working exploit.</p>
+
+  <div class="callout">
+    <p class="callout-title">Not a zero-day</p>
+    <p>The vulnerability was already public and fixed in Gitea 1.27.1. The striking result was how quickly the model turned its description into a working exploit and validated a real exposure in my environment.</p>
+  </div>
+
+  <h2>Taking the test live</h2>
+
+  <p>Once the exploit was reproducing reliably, I gave the model a new live objective: use the access it had gained to make a small, reversible change to my Kubernetes cluster and prove that the change reached live state. The screenshots below show how it approached that prompt.</p>
+
+  <h2>Watching the model move through the chain</h2>
+
+  <p>Each screenshot captures the next boundary as the investigation unfolds.</p>
+
+  <section class="evidence-step">
+    <p class="step-label">Step 1</p>
+    <h3>It started creating evidence repositories</h3>
+    <p>The model began by creating private, sacrificial repositories. A fixed, repository-contained canary confirmed code execution as the Gitea service user, and each repository preserved the result of one action.</p>
+    <figure>
+      <a href="{{ '/assets/images/daybreak-blue/01-evidence-repositories.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/01-evidence-repositories.png' | relative_url }}" alt="Sacrificial Gitea profile showing six private evidence repositories" loading="lazy"></a>
+      <figcaption>The private repositories created to preserve each stage of the authorized test.</figcaption>
+    </figure>
+  </section>
+
+  <section class="evidence-step">
+    <p class="step-label">Step 2</p>
+    <h3>It stored the repository-discovery results</h3>
+    <p>The registered account had no access to the private <code>mandaxx</code> organisation. After the RCE ran in the Gitea service context, however, the model could discover the server-side paths of those private repositories. It stored the results in an evidence repository and used them to identify which project might sit upstream of Argo CD.</p>
+    <figure>
+      <a href="{{ '/assets/images/daybreak-blue/02-repository-discovery.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/02-repository-discovery.png' | relative_url }}" alt="Repository path discovery results stored in Gitea" loading="lazy"></a>
+      <figcaption>The repository paths discovered through the Gitea service context.</figcaption>
+    </figure>
+  </section>
+
+  <section class="evidence-step">
+    <p class="step-label">Step 3</p>
+    <h3>It found my homelab repository and enumerated its files</h3>
+    <p>The model identified the homelab repository and enumerated its file tree. That exposed the structure of my Kubernetes and Argo CD configuration, allowing it to locate the GitOps manifests controlling a live workload.</p>
+    <figure>
+      <a href="{{ '/assets/images/daybreak-blue/03-homelab-repository.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/03-homelab-repository.png' | relative_url }}" alt="Homelab GitOps repository tree containing Kubernetes and Argo CD files" loading="lazy"></a>
+      <figcaption>The homelab tree revealed the Kubernetes and Argo CD deployment paths.</figcaption>
+    </figure>
+  </section>
+
+  <section class="evidence-step">
+    <p class="step-label">Step 4</p>
+    <h3>It made the malicious commit</h3>
+    <p>The model proved repository-integrity impact by committing a change to the trusted GitOps repository outside the normal user workflow. The commit added a top-level annotation to a Deployment.</p>
+    <figure>
+      <a href="{{ '/assets/images/daybreak-blue/04-gitops-commit.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/04-gitops-commit.png' | relative_url }}" alt="Gitea commit containing a two-line Deployment annotation" loading="lazy"></a>
+      <figcaption>The malicious-style commit changed one file by adding two metadata lines.</figcaption>
+    </figure>
+  </section>
+
+  <section class="evidence-step">
+    <p class="step-label">Step 5</p>
+    <h3>It showed the annotation on the deployed workload</h3>
+    <p>Finally, the live Deployment was queried for the exact annotation. The first screenshot shows the Kubernetes command; the second shows the canary value returned from the cluster. This was the final proof that the GitOps change had reached deployed Kubernetes state.</p>
+    <figure class="snippet">
+      <a href="{{ '/assets/images/daybreak-blue/05-kubernetes-query.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/05-kubernetes-query.png' | relative_url }}" alt="Kubernetes command checking the canary annotation" loading="lazy"></a>
+      <figcaption>The command used to inspect the deployed annotation.</figcaption>
+    </figure>
+    <figure class="snippet">
+      <a href="{{ '/assets/images/daybreak-blue/06-kubernetes-result.png' | relative_url }}"><img src="{{ '/assets/images/daybreak-blue/06-kubernetes-result.png' | relative_url }}" alt="The exact canary value returned from Kubernetes" loading="lazy"></a>
+      <figcaption>The exact annotation returned from the live Deployment.</figcaption>
+    </figure>
+  </section>
+
+  <p>Taken together, the screenshots show the model following the compromised Gitea service context into a private repository trusted by Argo CD, then making a compare-and-swap-protected commit that reached the live Kubernetes cluster.</p>
+
+  <div class="attack-chain" aria-label="Observed attack chain">
+    <span>Anonymous user</span><i>→</i>
+    <span>Gitea registration</span><i>→</i>
+    <span>Known RCE</span><i>→</i>
+    <span>GitOps repository</span><i>→</i>
+    <span>Kubernetes canary</span>
+  </div>
+
+  <p>Those capabilities were not unlimited. I also asked the model to take more destructive actions, including destroying or taking down the cluster, and it refused. The model could complete the controlled security validation, but meaningful guardrails remained when the request crossed into destructive behaviour.</p>
+
+  <h2>The three model choices</h2>
+
+  <p>One thing I initially found confusing was the relationship between Sol, Daybreak Blue and the dedicated Cyber model. They are three distinct choices with different safeguard profiles and intended uses:</p>
+
+  <div class="model-grid" aria-label="Model comparison">
+    <section class="model-card">
+      <span class="model-kind">General purpose</span>
+      <h3>gpt-5.6-sol</h3>
+      <p>The standard flagship general-purpose model.</p>
+      <span class="score">1.5%</span>
+    </section>
+    <section class="model-card current">
+      <span class="model-kind">Daybreak Blue</span>
+      <h3>gpt-daybreak-blue-latest</h3>
+      <p>A Sol-backed alias with safeguards calibrated for authorized defensive cybersecurity work.</p>
+      <span class="score">2.0%</span>
+    </section>
+    <section class="model-card">
+      <span class="model-kind">Purpose-trained cyber</span>
+      <h3>gpt-5.6-cyber</h3>
+      <p>The specialized model for advanced vulnerability research and exploit validation.</p>
+      <span class="score">95.0%</span>
+    </section>
+  </div>
+
+  <p class="fine-print">The percentages are OpenAI’s Advanced Cybersecurity Completion Rate, not a general intelligence score or exploit-success rate. They measure how often each option responds to advanced cybersecurity requests.</p>
+
+  <p>The part I keep coming back to is that this was Daybreak Blue—the Sol-backed option calibrated for defensive cybersecurity work—not the purpose-trained GPT‑5.6 Cyber model. It still identified the CVE, reconstructed a working exploit and proved its impact in my lab.</p>
+
+  <h2>One evening, start to finish</h2>
+
+  <div class="timeline" aria-label="Condensed assessment timeline">
+    <div class="timeline-row"><strong>18:19</strong><span>The full TCP scan began.</span></div>
+    <div class="timeline-row"><strong>18:21</strong><span>All 65,535 ports were covered in 131.90 seconds.</span></div>
+    <div class="timeline-row"><strong>19:43</strong><span>The Gitea exploit was reproducing reliably in an isolated lab.</span></div>
+    <div class="timeline-row"><strong>21:28</strong><span>The approved live canary confirmed code execution.</span></div>
+    <div class="timeline-row"><strong>21:54</strong><span>The final screenshot showed the canary on the live Kubernetes Deployment.</span></div>
+  </div>
+
+  <h2>Why this matters</h2>
+
+  <p>AI finding zero-days gets the headlines, but that is not the part that scares me most. This vulnerability was already public. What shocked me was watching Daybreak Blue take a newly disclosed CVE description and turn it into a reliable working exploit just 82 minutes after the full scan completed.</p>
+
+  <p>It then carried the thread from reconnaissance to version correlation, exploit reproduction, live validation and downstream impact in a single evening.</p>
+
+  <p>It was also my first attempt with the model. The prompt set the scope and objective; it was not a sophisticated exploitation playbook. I was not using specialist skills, subagents or a custom agent harness. The model was running through Codex with access to only a limited set of tools on my machine—and it still did all of this.</p>
+
+  <p>In the past, a CVE published without a working proof of concept might leave defenders months or even years before someone turned its description into a reliable exploit. AI can now collapse that window to minutes.</p>
+
+  <div class="callout">
+    <p class="callout-title">“We must act now” — Five Eyes cyber security agencies</p>
+    <p>The agencies warn that “cyber risk assumptions can become outdated in months, not years” and call for faster patching as AI compresses the time between vulnerability discovery and exploitation.</p>
+  </div>
+
+  <p>AI is not only shrinking the time from disclosure to exploitation; it is also accelerating vulnerability discovery. <a href="https://openai.com/index/daybreak-securing-the-world/">OpenAI describes the bottleneck as shifting from finding vulnerabilities to patching them</a>.</p>
+
+  <p>The pressure is already visible in the <a href="https://www.nist.gov/news-events/news/2026/04/nist-updates-nvd-operations-address-record-cve-growth">National Vulnerability Database</a>. NIST says CVE submissions increased 263% between 2020 and 2025, with the first quarter of 2026 nearly one-third higher than the same period in 2025. Despite enriching almost 42,000 CVEs in 2025, it could not keep pace. NVD still lists every CVE, but since April 2026 it has prioritised immediate enrichment for known-exploited vulnerabilities, software used by the US federal government and critical software; other records may not be scheduled for immediate enrichment.</p>
+
+  <p>With that volume, we cannot treat every High and Critical CVE as equally urgent simply because of its severity label. Priority must go to vulnerabilities that are reachable and genuinely exploitable in our environment, can be weaponised quickly and could cause meaningful impact. Those need urgent patching or mitigation.</p>
+
+  <p><a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">CISA’s Binding Operational Directive 26‑04</a> points in the same direction. It requires US federal civilian agencies to prioritise remediation using asset exposure, Known Exploited Vulnerabilities status, exploit automation and post-exploitation impact—while allowing lower-risk work to be deferred. Although the directive applies to federal agencies, its risk-based approach is useful for any vulnerability-management program.</p>
+
+  <p class="fine-print"><strong>What comes next:</strong> Daybreak Blue has since surfaced other potential vulnerabilities across open-source repositories. I am validating them before any private disclosure. Stay tuned for future posts on what I find.</p>
+
+  <h2>References</h2>
+
+  <ul>
+    <li>OpenAI model documentation: <a href="https://developers.openai.com/api/docs/models/gpt-5.6-sol">GPT‑5.6 Sol</a>, <a href="https://developers.openai.com/api/docs/models/gpt-daybreak-blue-latest">Daybreak Blue</a> and <a href="https://developers.openai.com/api/docs/models/gpt-5.6-cyber">GPT‑5.6 Cyber</a></li>
+    <li><a href="https://openai.com/index/expanding-daybreak-as-the-cyber-defense-window-narrows/">OpenAI: Expanding Daybreak as the Cyber Defense Window Narrows</a></li>
+    <li><a href="https://openai.com/index/daybreak-securing-the-world/">OpenAI on AI-accelerated vulnerability discovery</a></li>
+    <li><a href="https://www.nist.gov/news-events/news/2026/04/nist-updates-nvd-operations-address-record-cve-growth">NIST on record CVE growth and NVD enrichment</a></li>
+    <li><a href="https://github.com/go-gitea/gitea/security/advisories/GHSA-rcr6-4jqh-j84m">Gitea advisory for CVE‑2026‑60004</a></li>
+    <li><a href="https://www.cyber.gov.au/about-us/view-all-content/news/five-eyes-cyber-security-agencies-statement">Five Eyes cyber security agencies statement</a></li>
+    <li><a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">CISA BOD 26‑04</a></li>
+  </ul>
+
+  <hr>
+  <p class="fine-print">All testing was explicitly authorized and performed against privately owned systems.</p>
+</div>

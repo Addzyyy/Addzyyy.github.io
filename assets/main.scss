@@ -76,11 +76,10 @@
   font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  // Color tokens mirroring BLOG_POST.html, dark-adapted
-  // --fg: #e8e6e3, --muted: #9a9690, --bg: #1a1a1a
-  // --accent: #e8763f (lighter than light-mode #b8430f for dark contrast)
-  // --code-bg: #242422, --border: #3a3835, --highlight: #2a2018
+// Dark is the permanent site theme.
+:root {
+  color-scheme: dark;
+}
 
   body {
     background-color: #1a1a1a !important;
@@ -258,5 +257,222 @@
 
   em {
     color: #c8c4be !important;
+  }
+
+// Daybreak Blue article
+.daybreak-post {
+  --daybreak-accent: #ff7547;
+  --daybreak-blue: #7db7ff;
+  --daybreak-lime: #b6dc3c;
+  --daybreak-card: #222220;
+  --daybreak-card-raised: #292926;
+  --daybreak-border: #3a3835;
+}
+
+.daybreak-post .eyebrow,
+.daybreak-post .step-label {
+  margin: 0 0 0.75rem;
+  color: var(--daybreak-accent) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.daybreak-post .dek,
+.daybreak-post .lede {
+  color: #dedbd3 !important;
+  font-size: 1.16rem;
+  line-height: 1.65;
+}
+
+.daybreak-post .metrics,
+.daybreak-post .model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 2rem 0;
+  overflow: hidden;
+  background: var(--daybreak-border);
+  border: 1px solid var(--daybreak-border);
+  border-radius: 12px;
+}
+
+.daybreak-post .metric,
+.daybreak-post .model-card {
+  padding: 1.25rem;
+  background: var(--daybreak-card);
+}
+
+.daybreak-post .metric strong {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--daybreak-accent) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.7rem;
+}
+
+.daybreak-post .metric span,
+.daybreak-post .model-card p,
+.daybreak-post .fine-print {
+  color: #aaa69e !important;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.daybreak-post .callout {
+  margin: 2rem 0;
+  padding: 1.25rem 1.4rem;
+  background: var(--daybreak-card);
+  border: 1px solid var(--daybreak-border);
+  border-left: 4px solid var(--daybreak-lime);
+  border-radius: 4px 12px 12px 4px;
+}
+
+.daybreak-post .callout-title {
+  margin: 0 0 0.45rem;
+  color: var(--daybreak-lime) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.daybreak-post .callout p:last-child {
+  margin-bottom: 0;
+}
+
+.daybreak-post .evidence-step {
+  margin: 3.25rem 0;
+}
+
+.daybreak-post .evidence-step h3 {
+  margin-top: 0;
+}
+
+.daybreak-post figure {
+  margin: 1.5rem 0 0;
+}
+
+.daybreak-post figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #101010;
+  border: 1px solid var(--daybreak-border);
+  border-radius: 10px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+}
+
+.daybreak-post figcaption {
+  margin-top: 0.65rem;
+  color: #aaa69e;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.daybreak-post figure.snippet img {
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.daybreak-post .attack-chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--daybreak-card);
+  border: 1px solid var(--daybreak-border);
+  border-radius: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.daybreak-post .attack-chain span {
+  padding: 0.45rem 0.6rem;
+  background: var(--daybreak-card-raised);
+  border-radius: 6px;
+}
+
+.daybreak-post .attack-chain i {
+  color: var(--daybreak-accent);
+  font-style: normal;
+}
+
+.daybreak-post .model-card.current {
+  background: linear-gradient(145deg, rgba(182, 220, 60, 0.1), var(--daybreak-card));
+}
+
+.daybreak-post .model-card h3 {
+  margin: 0 0 0.5rem;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+}
+
+.daybreak-post .model-card .model-kind,
+.daybreak-post .model-card .score {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 800;
+}
+
+.daybreak-post .model-card .model-kind {
+  margin-bottom: 0.6rem;
+  color: var(--daybreak-accent);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daybreak-post .model-card.current .model-kind {
+  color: var(--daybreak-lime);
+}
+
+.daybreak-post .model-card .score {
+  margin-top: 0.8rem;
+  color: #f0eeea;
+  font-size: 1.45rem;
+}
+
+.daybreak-post .timeline {
+  margin: 2rem 0;
+  border-bottom: 1px solid var(--daybreak-border);
+}
+
+.daybreak-post .timeline-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--daybreak-border);
+}
+
+.daybreak-post .timeline-row strong {
+  color: var(--daybreak-accent) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+}
+
+.daybreak-post .timeline-row span {
+  color: #e8e6e3;
+}
+
+@media (max-width: 700px) {
+  .daybreak-post .metrics,
+  .daybreak-post .model-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .daybreak-post .timeline-row {
+    grid-template-columns: 4rem 1fr;
   }
 }
