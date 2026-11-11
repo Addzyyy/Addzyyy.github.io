@@ -1,0 +1,77 @@
+---
+layout: post
+title: "Stop Trying to Make AI Write Better Code"
+date: 2026-11-11 00:00:00 +1100
+author: Addzyy
+description: "The future of software engineering isn't better programmers. It's better factories. AI generates; mathematics verifies."
+categories: [ai, formal-methods, software-engineering]
+---
+
+<div class="software-factory-post">
+<p class="eyebrow">AI Agents / Formal Methods / Software Factories</p>
+<p class="subtitle">The future of software engineering isn't better programmers. It's better factories.</p>
+
+<p class="lead">Everyone is trying to make AI write better code.</p>
+<p>Better models. Better prompts. Better agents. Better code reviews.</p>
+<p>I think we're solving the wrong problem.</p>
+<p class="punch">AI doesn't need to get it right the first time. It needs to produce code that can be proved correct.</p>
+<p>We don't need to trust the AI. We need to stop asking it to be trustworthy.</p>
+<p>This is bigger than coding agents. <strong>It's how software moves from craftsmanship to factory engineering.</strong></p>
+<h2>Stop inspecting every car off the assembly line</h2>
+<p>Software is still built like a craft. One engineer writes an implementation, another reads it, and tests provide evidence that selected examples work. AI can now generate code faster than humans can reasonably inspect it. Our answer has been to build more AI code reviewers.</p>
+<p>But a factory doesn't scale quality by endlessly hiring inspectors. It designs the production process to prevent defects.</p>
+<blockquote>What if code review is a symptom of how little we can actually guarantee about the software we produce?</blockquote>
+<p>Rather than asking whether AI-generated code <em>looks</em> correct, we could require an independent system to establish the properties we care about.</p>
+<h2>What are formal methods?</h2>
+<p>Formal methods are techniques for describing software behaviour mathematically and checking whether a system obeys those rules. They are not new: they have long been used in high-stakes areas such as aerospace, cryptography and distributed systems. What changes with AI is how cheaply we might create and maintain the specifications and proofs.</p>
+<p>There are two complementary approaches. <strong>Model checking</strong> (such as TLA+ or Alloy) can exhaustively explore <strong>every reachable state and possible sequence of events within a finite model</strong>, producing a counterexample when a rule fails. <strong>Deductive verification</strong> (such as Dafny, Lean or Verus) can mathematically prove that an implementation satisfies its formal contracts <strong>for every possible input covered by the proof</strong> — not just the examples we happened to test.</p>
+<h2>Stop trusting AI to follow contracts. Prove it.</h2>
+<p>We already give coding agents contracts: Jira tickets, acceptance criteria, Markdown specifications and <code>AGENTS.md</code> files.</p>
+<p>But these are mostly instructions in natural language. <strong>Nothing guarantees the agent will follow them or implement them correctly.</strong> Even AI-generated tests may simply validate the agent's interpretation of the requirements.</p>
+<p>Formal specifications change that.</p>
+<p>Instead of describing what we hope the agent will do, we express precise obligations mathematically. Tools such as <strong>Dafny, Lean and Verus</strong> can establish that an implementation satisfies those obligations for <strong>every possible input and execution case covered by the proof</strong>, not merely the examples we happened to test.</p>
+<p>And crucially, <strong>the judge isn't another AI.</strong></p>
+<p>Lean uses a small, deterministic proof-checking kernel. Dafny generates verification conditions checked using SMT solvers. The AI can generate code, propose proofs, make mistakes and try again. But a confident explanation cannot substitute for successful mathematical verification.</p>
+
+
+
+
+
+
+<h2>The real problem is that we don't know what we want</h2>
+<p>Calling a Markdown file a specification doesn't make natural language precise. If English alone made contracts unambiguous, lawyers would have had much less work for centuries.</p>
+<p>Consider: “Users must be able to securely recover their accounts.” Does a password reset revoke existing sessions? Are old tokens invalidated? What if two requests overlap?</p>
+<p>That's why I want to use <strong>TLA+ and Alloy as exploratory tools</strong>, not as declarations that our first specification is correct.</p>
+<p>Start with human intent. Let AI construct a deliberately provisional model. Explore possible states and traces. Show humans surprising behaviours. Ask: <em>Is that acceptable? Did we forget a rule?</em> Refine the spec and repeat.</p>
+<div class="callout"><div class="callout-label">The software-factory loop</div>
+<div class="flow"><span>Human intent</span><b>→</b><span>Exploratory model</span><b>→</b><span>Counterexamples</span><b>→</b><span>Refined spec</span><b>→</b><span>AI implementation</span><b>→</b><span>Machine-checked proof</span></div>
+<p>Model checking helps us discover undesirable behaviours and missing decisions. Deductive verification then establishes whether an implementation obeys the resulting formal contract. Translating between those artifacts must itself be checked, not blindly trusted.</p></div>
+<p>The model checker can't magically discover every requirement nobody stated. But it gives us concrete possibilities to approve or reject rather than letting an agent silently invent policy as it codes.</p>
+<h2>This is already happening in industry</h2>
+<p>These aren't just thought experiments:</p>
+<ul>
+<li><strong><a href="https://www.anthropic.com/research/formal-verification">Anthropic and Theorem</a> (October 2026)</strong> reported AI-generated, machine-checked assembly-level security proofs across <strong>123 open-source libraries</strong>. The guarantees are narrow but real: specified no-crash properties under explicit RISC-V, Linux, input-size and execution assumptions.</li>
+<li><strong><a href="https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/">Microsoft Research and GitHub Next</a> (November 2026)</strong> introduced PDD Kit, which turns reviewed intent into Verus contracts and checks agent-written Rust. Their demonstration explicitly avoids line-by-line human review of generated login logic, while testing what remains outside the proof.</li>
+<li><strong><a href="https://www.microsoft.com/en-us/research/publication/specula-scaling-formal-specifications-for-autonomous-model-checking-of-system-code/">Microsoft Research — Specula</a> (July 2026)</strong> uses AI agents to derive TLA+ models and invariants from real systems code, then model-checks them to find defects. Its researchers report <strong>249 bugs across 48 open-source projects</strong>. This is the exploration side of the factory: finding behaviour that the existing design permits.</li>
+<li><strong><a href="https://github.com/bendlang/bend">Bend 2</a> (2026)</strong> makes the contract explicit with <code>LAWS.bend</code> and asks the agent to supply proofs in <code>PROOF.bend</code>. Its compiler checks the laws, making it a concrete example of the idea of an <em>AGENTS.md backed by proof</em>. Bend remains experimental; its own documentation notes limitations in checker assurance, compiler trust and backend behaviour.</li>
+<li><strong><a href="https://deepmind.google/blog/introducing-alphaproof-code/">Google DeepMind</a> (November 2026)</strong> described AlphaProof Code verifying key security properties of Signal protocol code with Lean, using human-reviewed specifications and AI-generated proofs. DeepMind reported that roughly <strong>1% of the codebase</strong> was flagged for additional human attention.</li>
+</ul>
+<p>These are different research demonstrations, not evidence that arbitrary production software can already be fully verified. But they're evidence of a direction: <strong>human attention shifts to intent and trust boundaries; machines increasingly check the implementation.</strong></p>
+<h2>I found seven bugs in code with 499 passing tests</h2>
+<p>I also tried AI-assisted formal modelling on BingeBuffer, a personal application built through AI-generated code. It had <strong>499 passing tests</strong>, <strong>83.3% line coverage</strong> and <strong>71.7% branch coverage</strong>.</p>
+<div class="stats"><div class="stat"><strong>499</strong><span>Passing tests</span></div><div class="stat"><strong>7</strong><span>Reproduced bugs</span></div><div class="stat"><strong>83.3%</strong><span>Line coverage</span></div></div>
+<p>Yet AI-generated TLA+ models helped identify seven bugs that were reproduced in the actual application with local fake services. One could start downloads after a show was removed. Another could overwrite settings while reporting success.</p>
+<p>This <em>didn't</em> prove the application correct. It showed that model exploration could find unwanted behaviours that the existing test suite missed. That's a useful first step towards a factory with stronger guarantees.</p>
+<h2>Source code could become a generated artifact</h2>
+<p>We don't review machine code line by line; we maintain source code and compile it. We don't normally edit Docker image layers; we change the Dockerfile and rebuild.</p>
+<p>What if software moves up another abstraction level?</p>
+<p><strong>The specification becomes what humans maintain. The code becomes what agents manufacture.</strong> When requirements change, we update the contract, regenerate an implementation, and rerun the proofs and integration checks.</p><p class="punch">If an implementation is mathematically proved to satisfy an approved specification, why should a human still inspect its algorithm line by line to establish those same properties?</p><p>They shouldn’t.</p><p>Not for the properties actually proved. The implementation could be elegant, ugly or generated by a cheap model on its fiftieth attempt. If it satisfies the verified contract, how it was written becomes less important.</p><p>That freedom only extends as far as the proof: external dependencies, runtime assumptions and unverified behaviour still need engineering and testing.</p>
+<p>Perhaps languages like Dafny and Lean become agent-facing representations, optimised for precise semantics and verifier feedback rather than convenient human typing. Perhaps cheap agents making repeated attempts against strict gates outperform expensive agents producing polished but unproved code. Those are hypotheses we can measure.</p>
+<p>The engineer becomes less like an artisan writing each component and more like a manufacturing engineer designing a production system: specifications, architecture, verification gates, containment, monitoring and continuous improvement.</p>
+<p class="punch">The metric stops being lines of code per engineer. It becomes reliably verified behaviour produced per unit of human attention.</p>
+<h2>The hard part moves to the spec</h2>
+<p>A mathematically verified implementation can still implement the wrong requirement perfectly. A proof doesn't tell us what customers want, which policies are fair, or what we forgot to specify. That is why exploratory modelling, prototypes, user feedback and human judgement remain central.</p>
+<p>But what a shift that would be: fewer humans inspecting generated implementation details, more humans deciding which behaviours should exist at all.</p>
+<div class="endnote"><p>Stop trying to make AI write better code.</p><p>Start building factories that can prove what they produce.</p></div>
+<section aria-label="Further reading" class="sources"><h2>Further reading</h2><p><a href="https://www.anthropic.com/research/formal-verification">Anthropic — LLMs are making formal software verification feasible at a much larger scale</a><br/><a href="https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/">Microsoft Research — PDD Kit</a><br/><a href="https://deepmind.google/blog/introducing-alphaproof-code/">Google DeepMind — AlphaProof Code</a><br/><a href="https://www.microsoft.com/en-us/research/publication/specula-scaling-formal-specifications-for-autonomous-model-checking-of-system-code/">Microsoft Research — Specula</a><br/><a href="https://github.com/bendlang/bend">Bend 2 — laws and proofs</a></p></section>
+</div>

@@ -476,3 +476,126 @@
     grid-template-columns: 4rem 1fr;
   }
 }
+
+// Software factories essay
+.software-factory-post {
+  overflow-wrap: break-word;
+
+  .eyebrow,
+  .callout-label {
+    margin-bottom: 0.75rem;
+    color: #7dcfff !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .subtitle,
+  .lead {
+    font-size: 1.2rem;
+    line-height: 1.65;
+  }
+
+  .subtitle {
+    margin-bottom: 2rem;
+    color: #9aa5ce !important;
+  }
+
+  .punch {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.55;
+  }
+
+  .callout {
+    margin: 2rem 0;
+    padding: 1.25rem;
+    background: #1f2335;
+    border: 1px solid #414868;
+    border-left: 4px solid #7dcfff;
+    border-radius: 4px 12px 12px 4px;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    span {
+      max-width: 100%;
+      padding: 0.5rem 0.65rem;
+      background: #24283b;
+      border: 1px solid #414868;
+      border-radius: 6px;
+    }
+
+    b {
+      color: #7dcfff;
+    }
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .stat {
+    padding: 1rem;
+    background: #1f2335;
+    border-top: 3px solid #7aa2f7;
+    border-radius: 0 0 8px 8px;
+
+    strong {
+      display: block;
+      color: #7aa2f7 !important;
+      font-size: 1.8rem;
+      line-height: 1.2;
+    }
+
+    span {
+      display: block;
+      margin-top: 0.4rem;
+      color: #9aa5ce;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+  }
+
+  .endnote {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #414868;
+
+    p {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+  }
+
+  .sources {
+    font-size: 0.9rem;
+
+    a {
+      overflow-wrap: anywhere;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .software-factory-post .stats {
+    grid-template-columns: 1fr;
+  }
+}
