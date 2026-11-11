@@ -19,7 +19,8 @@ categories: [ai, formal-methods, software-engineering]
 <p>This is bigger than coding agents. <strong>It's how software moves from craftsmanship to factory engineering.</strong></p>
 <h2>Stop inspecting every car off the assembly line</h2>
 <p>Software is still built like a craft. One engineer writes an implementation, another reads it, and tests provide evidence that selected examples work. AI can now generate code faster than humans can reasonably inspect it. Our answer has been to build more AI code reviewers.</p>
-<p>But a factory doesn't scale quality by endlessly hiring inspectors. It designs the production process to prevent defects.</p>
+<p>Toyota provides a concrete example. One pillar of the <a href="https://global.toyota/en/company/vision-and-philosophy/production-system/">Toyota Production System</a> is <strong>jidoka</strong>: equipment detects an abnormality and stops automatically, or a worker stops the line when they spot a problem. The defect is caught where it happens, before it passes to the next stage. People then address its cause to prevent it from recurring. Quality is built into the process.</p>
+<p>That's the principle I want to borrow for AI-generated software. Let the agent generate an implementation, but stop it from progressing when an independent verifier cannot establish the required properties. Use that failure to guide the next attempt. A factory doesn't scale quality by endlessly hiring inspectors; it builds checks and corrective action into production.</p>
 <blockquote>What if code review is a symptom of how little we can actually guarantee about the software we produce?</blockquote>
 <p>Rather than asking whether AI-generated code <em>looks</em> correct, we could require an independent system to establish the properties we care about.</p>
 <h2>What are formal methods?</h2>
