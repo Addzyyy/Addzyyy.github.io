@@ -67,7 +67,20 @@ categories: [ai, formal-methods, software-engineering]
 <p>These are different research demonstrations, not evidence that arbitrary production software can already be fully verified. But they're evidence of a direction: <strong>human attention shifts to intent and trust boundaries; machines increasingly check the implementation.</strong></p>
 <h2>I found seven bugs in code with 499 passing tests</h2>
 <p>I also tried AI-assisted formal modelling on BingeBuffer, a personal application built through AI-generated code. It had <strong>499 passing tests</strong>, <strong>83.3% line coverage</strong> and <strong>71.7% branch coverage</strong>.</p>
-<div class="stats"><div class="stat"><strong>499</strong><span>Passing tests</span></div><div class="stat"><strong>7</strong><span>Reproduced bugs</span></div><div class="stat"><strong>83.3%</strong><span>Line coverage</span></div></div>
+<div class="stats">
+  <div class="stat">
+    <strong>499</strong>
+    <span>Passing tests</span>
+  </div>
+  <div class="stat">
+    <strong>7</strong>
+    <span>Reproduced bugs</span>
+  </div>
+  <div class="stat">
+    <strong>83.3%</strong>
+    <span>Line coverage</span>
+  </div>
+</div>
 <p>Yet AI-generated TLA+ models helped identify seven bugs that were reproduced in the actual application with local fake services. One could start downloads after a show was removed. Another could overwrite settings while reporting success.</p>
 <p>This <em>didn't</em> prove the application correct. It showed that model exploration could find unwanted behaviours that the existing test suite missed. That's a useful first step towards a factory with stronger guarantees.</p>
 <h2>Source code could become a generated artifact</h2>
