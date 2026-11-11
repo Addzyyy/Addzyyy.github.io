@@ -45,7 +45,14 @@ categories: [ai, formal-methods, software-engineering]
 <p>That's why I want to use <strong>TLA+ and Alloy as exploratory tools</strong>, not as declarations that our first specification is correct.</p>
 <p>Start with human intent. Let AI construct a deliberately provisional model. Explore possible states and traces. Show humans surprising behaviours. Ask: <em>Is that acceptable? Did we forget a rule?</em> Refine the spec and repeat.</p>
 <div class="callout"><div class="callout-label">The software-factory loop</div>
-<div class="flow"><span>Human intent</span><b>→</b><span>Exploratory model</span><b>→</b><span>Counterexamples</span><b>→</b><span>Refined spec</span><b>→</b><span>AI implementation</span><b>→</b><span>Machine-checked proof</span></div>
+<ol class="factory-diagram" aria-label="The six stages of the software-factory loop">
+  <li><span class="stage-number" aria-hidden="true">01</span><span>Human intent</span><span class="connector" aria-hidden="true">→</span></li>
+  <li><span class="stage-number" aria-hidden="true">02</span><span>Exploratory model</span><span class="connector" aria-hidden="true">→</span></li>
+  <li><span class="stage-number" aria-hidden="true">03</span><span>Counterexamples</span><span class="connector" aria-hidden="true">→</span></li>
+  <li><span class="stage-number" aria-hidden="true">04</span><span>Refined spec</span><span class="connector" aria-hidden="true">→</span></li>
+  <li><span class="stage-number" aria-hidden="true">05</span><span>AI implementation</span><span class="connector" aria-hidden="true">→</span></li>
+  <li><span class="stage-number" aria-hidden="true">06</span><span>Machine-checked proof</span></li>
+</ol>
 <p>Model checking helps us discover undesirable behaviours and missing decisions. Deductive verification then establishes whether an implementation obeys the resulting formal contract. Translating between those artifacts must itself be checked, not blindly trusted.</p></div>
 <p>The model checker can't magically discover every requirement nobody stated. But it gives us concrete possibilities to approve or reject rather than letting an agent silently invent policy as it codes.</p>
 <h2>This is already happening in industry</h2>
